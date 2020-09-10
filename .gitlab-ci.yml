@@ -3,12 +3,19 @@ include:
   - remote: 'https://raw.githubusercontent.com/mayadata-io/gitlab-remote-templates/master/templates/pod-delete-template.yml'
   - remote: 'https://raw.githubusercontent.com/mayadata-io/gitlab-remote-templates/master/templates/uninstall-litmus-template.yml’
 
-
 stages:
-  - chaos
+  - appDeploy
+  - chaosInfraSetup
+  - chaosInject
+  - chaosInfraCleanup
+  
+Deploy to Staging:
+  stage: appDeploy
+  script:
+    - kubectl apply run nginx --image=nginx --restart=Always
 
 Install LitmusChaos:
-  stage: chaos
+  stage: chaosInfraSetup
   extends: .install_litmus_template
   before_script:
   variables:
@@ -17,7 +24,7 @@ Install LitmusChaos:
     EXPERIMENT_IMAGE_TAG: 1.7.0
     
 Inject Pod Delete Chaos:
-  stage: chaos
+  stage: chaosInject
   extends: .pod_delete_template
   before_script:
   variables:
@@ -27,7 +34,7 @@ Inject Pod Delete Chaos:
     TARGET_CONTAINER: nginx
 
 UnInstall LitmusChaos:
-  stage: chaos
+  stage: chaosInfraCleanup
   extends: .uninstall_litmus_template
   before_script:
   variables:
