@@ -1,7 +1,7 @@
 include:
   - remote: 'https://raw.githubusercontent.com/mayadata-io/gitlab-remote-templates/master/templates/install-litmus-template.yml'
-  - remote: 'https://raw.githubusercontent.com/mayadata-io/gitlab-remote-templates/master/templates/pod-delete-template.yml'
-  - remote: 'https://raw.githubusercontent.com/mayadata-io/gitlab-remote-templates/master/templates/uninstall-litmus-template.yml’
+  - remote: 'https://raw.githubusercontent.com/mayadata-io/gitlab-remote-templates/master/templates/node-cpu-hog-template.yml'
+  - remote: 'https://raw.githubusercontent.com/mayadata-io/gitlab-remote-templates/master/templates/uninstall-litmus-template.yml'
 
 stages:
   - appDeploy
@@ -23,13 +23,13 @@ Install LitmusChaos:
     EXPERIMENT_IMAGE: litmuschaos/go-runner
     EXPERIMENT_IMAGE_TAG: 1.7.0
     
-Inject Pod Delete Chaos:
+Inject Node CPU Hog:
   stage: chaosInject
-  extends: .pod_delete_template
+  extends: .node_cpu_hog_template
   before_script:
   variables:
     APP_NS: default
-    APP_LABEL: "app=nginx"
+    APP_LABEL: "run=nginx"
     APP_KIND: deployment
     TARGET_CONTAINER: nginx
 
